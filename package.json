@@ -1,0 +1,33 @@
+{
+  "name": "commandcraft",
+  "version": "2.0.0",
+  "private": true,
+  "description": "CommandCraft · Linux 与 Windows 命令行学习站（VitePress 双轨文档站，浏览器内终端可实操）",
+  "keywords": [
+    "vitepress",
+    "documentation",
+    "tutorial-site",
+    "linux",
+    "windows",
+    "powershell",
+    "cli",
+    "shell",
+    "chinese-docs",
+    "命令行",
+    "教程站"
+  ],
+  "license": "MIT",
+  "scripts": {
+    "dev": "vitepress dev docs",
+    "build": "vitepress build docs",
+    "preview": "vitepress preview docs",
+    "verify": "esbuild scripts/verify-engines.ts --bundle --platform=node --format=esm --outfile=node_modules/.tmp/engines.mjs --log-level=warning && node node_modules/.tmp/engines.mjs && esbuild scripts/verify-doc-claims.ts --bundle --platform=node --format=esm --outfile=node_modules/.tmp/docclaims.mjs --log-level=warning && node node_modules/.tmp/docclaims.mjs && esbuild scripts/verify-acceptance.ts --bundle --platform=node --format=esm --outfile=node_modules/.tmp/acceptance.mjs --log-level=warning && node node_modules/.tmp/acceptance.mjs"
+  },
+  "dependencies": {
+    "@xterm/addon-fit": "^0.10.0",
+    "xterm": "^5.3.0"
+  },
+  "devDependencies": {
+    "vitepress": "^1.6.4"
+  }
+}

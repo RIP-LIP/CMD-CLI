@@ -1,0 +1,460 @@
+/* ============================================================================
+ * 换肤 + 站点专用样式。
+ *
+ * 纪律：视觉改动只在这里，且优先改 CSS 变量，不用 !important，
+ * 不用 .VPSidebar 之类的私有类名（升级会静默失效）。
+ * ========================================================================== */
+
+:root {
+  --vp-c-brand-1: #3451b2;
+  --vp-c-brand-2: #3a5cc9;
+  --vp-c-brand-3: #5673d6;
+  --vp-c-brand-soft: rgba(52, 81, 178, 0.14);
+
+  --vp-c-bg: #ffffff;
+  --vp-c-bg-alt: #f6f7f9;
+  --vp-c-bg-soft: #f0f1f3;
+
+  --vp-font-family-base: 'PingFang SC', 'Microsoft YaHei', 'Helvetica Neue', Arial, sans-serif;
+  --vp-font-family-mono: 'JetBrains Mono', Consolas, 'Courier New', monospace;
+}
+
+.dark {
+  --vp-c-brand-1: #a3b4f0;
+  --vp-c-brand-2: #8fa3e8;
+  --vp-c-brand-3: #6b83d4;
+  --vp-c-brand-soft: rgba(143, 163, 232, 0.16);
+}
+
+/* 表格在窄屏不要撑破布局 */
+.vp-doc table {
+  display: block;
+  overflow-x: auto;
+}
+
+/* ── 命令参考卡 ───────────────────────────────────────────────── */
+.cmd-card {
+  border: 1px solid var(--vp-c-divider);
+  border-radius: 8px;
+  padding: 14px 16px;
+  margin: 16px 0;
+  background: var(--vp-c-bg-soft);
+}
+
+.cmd-card h3 {
+  margin: 0 0 2px;
+  font-size: 17px;
+  font-family: var(--vp-font-family-mono);
+}
+
+.cmd-card .cmd-tag {
+  font-size: 12px;
+  color: var(--vp-c-text-3);
+  font-family: var(--vp-font-family-mono);
+}
+
+.cmd-card .cmd-syntax {
+  margin: 10px 0;
+  padding: 6px 10px;
+  border-radius: 5px;
+  background: var(--vp-c-bg);
+  border: 1px solid var(--vp-c-divider);
+  font-family: var(--vp-font-family-mono);
+  font-size: 13px;
+  overflow-x: auto;
+}
+
+.cmd-card h4 {
+  margin: 14px 0 6px;
+  font-size: 14px;
+  color: var(--vp-c-text-2);
+}
+
+/* ── 静态伪终端（TerminalBlock）───────────────────────────────── */
+.term {
+  border-radius: 8px;
+  overflow: hidden;
+  border: 1px solid var(--vp-c-divider);
+  margin: 14px 0;
+  font-family: var(--vp-font-family-mono);
+  font-size: 13px;
+  line-height: 1.65;
+}
+
+.term-bar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 7px 12px;
+  background: #1e293b;
+  color: #94a3b8;
+  font-size: 12px;
+}
+
+.term-dots {
+  display: inline-flex;
+  gap: 5px;
+}
+
+.term-dots i {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: #475569;
+  display: block;
+}
+
+.term-body {
+  margin: 0;
+  padding: 12px 14px;
+  background: #0f172a;
+  color: #e2e8f0;
+  overflow-x: auto;
+  white-space: pre;
+}
+
+.term-body .p { color: #7dd3fc; }
+.term-body .c { color: #e2e8f0; font-weight: 600; }
+.term-body .o { color: #cbd5e1; }
+.term-body .m { color: #64748b; font-style: italic; }
+.term-body .h { color: #fbbf24; }
+
+/* ── 活终端容器 ───────────────────────────────────────────────── */
+.live-term {
+  border-radius: 8px;
+  overflow: hidden;
+  border: 1px solid var(--vp-c-divider);
+  margin: 14px 0;
+}
+
+.live-term-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 7px 12px;
+  background: #1e293b;
+  color: #94a3b8;
+  font-size: 12px;
+}
+
+/* 必须是**固定高度**，不能用 min-height。
+   xterm 会按容器高度算行数，而它渲染出的 .xterm-screen 又撑高容器，
+   ResizeObserver 再触发一次 fit —— 于是行数越算越多、容器越撑越高，
+   最终变成一个 7000px 高的空白黑框。固定高度把这个反馈环掐断。 */
+.live-term-host {
+  background: #0f172a;
+  height: 300px;
+  padding: 8px;
+  overflow: hidden;
+}
+
+/* 加载提示覆盖在终端之上，不用 v-show 隐藏终端宿主 ——
+   xterm 在容器 display:none 时量到的宽高是 0，会画出一片空白。 */
+.live-term-overlay {
+  padding: 22px 18px;
+  background: #0f172a;
+  color: #94a3b8;
+  font-size: 14px;
+}
+
+.live-term-fallback {
+  padding: 22px 18px;
+  background: #0f172a;
+  color: #94a3b8;
+  font-size: 14px;
+  line-height: 1.7;
+}
+
+.live-term-fallback a {
+  color: #7dd3fc;
+}
+
+.live-term-hint {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 14px;
+  padding: 8px 12px;
+  background: var(--vp-c-bg-soft);
+  border-top: 1px solid var(--vp-c-divider);
+  font-size: 12px;
+  color: var(--vp-c-text-2);
+}
+
+/* 终端支持范围说明。如实告诉读者哪些命令敲不进来，
+   免得他把「模拟器没实现」误当成「自己敲错了」。 */
+.live-term-note {
+  border-top: 1px solid var(--vp-c-divider);
+  padding: 10px 12px;
+  font-size: 13px;
+  color: var(--vp-c-text-2);
+}
+
+.live-term-note summary {
+  cursor: pointer;
+  font-size: 13px;
+}
+
+.live-term-note p {
+  margin: 8px 0 0;
+  line-height: 1.75;
+}
+
+.live-term-note .cmds {
+  font-family: var(--vp-font-family-mono);
+  font-size: 12px;
+  word-break: break-word;
+  line-height: 1.9;
+  color: var(--vp-c-text-3);
+}
+
+/* ── 实战演练任务清单 ─────────────────────────────────────────── */
+.arena {
+  border: 1px solid var(--vp-c-divider);
+  border-radius: 8px;
+  padding: 16px;
+  margin: 20px 0;
+}
+
+.arena h2 {
+  margin: 0 0 6px;
+  border-top: 0;
+  padding-top: 0;
+}
+
+.arena-task {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 7px 0;
+  border-bottom: 1px dashed var(--vp-c-divider);
+  font-size: 14px;
+}
+
+.arena-task:last-child { border-bottom: 0; }
+
+.arena-task .num {
+  flex: 0 0 auto;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: var(--vp-c-bg-soft);
+  color: var(--vp-c-text-2);
+  font-size: 12px;
+  display: grid;
+  place-items: center;
+}
+
+.arena-task.done .num {
+  background: #16a34a;
+  color: #fff;
+}
+
+.arena-task.done .text { color: var(--vp-c-text-2); text-decoration: line-through; }
+
+.arena-bar {
+  height: 6px;
+  border-radius: 3px;
+  background: var(--vp-c-bg-soft);
+  overflow: hidden;
+  margin: 10px 0;
+}
+
+.arena-bar > i {
+  display: block;
+  height: 100%;
+  background: var(--vp-c-brand-1);
+  transition: width 0.25s;
+}
+
+.arena-actions {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-top: 12px;
+}
+
+.arena-actions button {
+  font-size: 13px;
+  padding: 5px 12px;
+  border-radius: 6px;
+  border: 1px solid var(--vp-c-divider);
+  background: var(--vp-c-bg-soft);
+  color: var(--vp-c-text-1);
+  cursor: pointer;
+}
+
+.arena-actions button:disabled { opacity: 0.45; cursor: not-allowed; }
+
+.arena-actions button.primary {
+  background: var(--vp-c-brand-1);
+  border-color: var(--vp-c-brand-1);
+  color: #fff;
+}
+
+/* ── 测验 ─────────────────────────────────────────────────────── */
+.quiz {
+  border: 1px solid var(--vp-c-divider);
+  border-radius: 8px;
+  padding: 16px;
+  margin: 20px 0;
+}
+
+.quiz-q {
+  padding: 12px 0;
+  border-bottom: 1px dashed var(--vp-c-divider);
+}
+
+.quiz-q:last-of-type { border-bottom: 0; }
+
+.quiz-q .q-head {
+  display: flex;
+  gap: 8px;
+  font-size: 14px;
+  margin-bottom: 8px;
+}
+
+.quiz-q .q-num {
+  flex: 0 0 auto;
+  font-size: 11px;
+  color: var(--vp-c-text-3);
+  font-family: var(--vp-font-family-mono);
+  padding-top: 3px;
+}
+
+.quiz-opts { list-style: none; padding: 0; margin: 0; }
+
+.quiz-opts label {
+  display: flex;
+  gap: 8px;
+  align-items: flex-start;
+  padding: 5px 8px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.quiz-opts label:hover { background: var(--vp-c-bg-soft); }
+.quiz-opts label.sel { background: var(--vp-c-brand-soft); }
+.quiz-opts label.right { background: rgba(22, 163, 74, 0.16); }
+.quiz-opts label.wrong { background: rgba(220, 38, 38, 0.13); }
+
+.quiz-opts .opt-key {
+  flex: 0 0 auto;
+  font-family: var(--vp-font-family-mono);
+  color: var(--vp-c-text-3);
+}
+
+.quiz-fill {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+  font-family: var(--vp-font-family-mono);
+  font-size: 14px;
+  flex-wrap: wrap;
+}
+
+.quiz-fill input {
+  flex: 1 1 160px;
+  min-width: 120px;
+  padding: 5px 8px;
+  border-radius: 5px;
+  border: 1px solid var(--vp-c-divider);
+  background: var(--vp-c-bg);
+  color: var(--vp-c-text-1);
+  font-family: var(--vp-font-family-mono);
+  font-size: 14px;
+}
+
+.quiz-result {
+  margin-top: 8px;
+  font-size: 13px;
+  padding: 8px 10px;
+  border-radius: 5px;
+  line-height: 1.7;
+}
+
+.quiz-result.ok { background: rgba(22, 163, 74, 0.12); }
+.quiz-result.no { background: rgba(220, 38, 38, 0.1); }
+.quiz-result .why { color: var(--vp-c-text-2); margin-top: 4px; }
+
+.quiz-actions {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  margin-top: 14px;
+  flex-wrap: wrap;
+}
+
+.quiz-actions button {
+  font-size: 14px;
+  padding: 6px 16px;
+  border-radius: 6px;
+  border: 1px solid var(--vp-c-divider);
+  background: var(--vp-c-bg-soft);
+  color: var(--vp-c-text-1);
+  cursor: pointer;
+}
+
+.quiz-actions button.primary {
+  background: var(--vp-c-brand-1);
+  border-color: var(--vp-c-brand-1);
+  color: #fff;
+}
+
+.quiz-score { font-size: 14px; color: var(--vp-c-text-2); }
+
+/* ── 进度环 ───────────────────────────────────────────────────── */
+.ring-wrap { display: flex; align-items: center; gap: 18px; flex-wrap: wrap; }
+.ring-wrap svg { flex: 0 0 auto; }
+.ring-track { stroke: var(--vp-c-bg-soft); }
+.ring-bar { stroke: var(--vp-c-brand-1); transition: stroke-dashoffset 0.4s; }
+.ring-label { font-size: 22px; font-weight: 700; fill: var(--vp-c-text-1); }
+
+.stat-row { display: flex; gap: 22px; flex-wrap: wrap; margin: 10px 0 20px; }
+.stat { }
+.stat b { display: block; font-size: 20px; }
+.stat span { font-size: 12px; color: var(--vp-c-text-3); }
+
+/* ── 徽章墙 ───────────────────────────────────────────────────── */
+.badge-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  gap: 10px;
+  margin: 14px 0;
+}
+
+.badge-item {
+  border: 1px solid var(--vp-c-divider);
+  border-radius: 7px;
+  padding: 9px 11px;
+  font-size: 13px;
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.badge-item.locked { opacity: 0.42; }
+
+/* ── 章节表 ───────────────────────────────────────────────────── */
+.chapter-table { width: 100%; margin: 14px 0; }
+.chapter-table td { font-size: 14px; }
+.chapter-table .num { font-family: var(--vp-font-family-mono); color: var(--vp-c-text-3); width: 34px; }
+.chapter-table .dur { color: var(--vp-c-text-3); font-size: 13px; white-space: nowrap; }
+
+/* ── 模块元信息条 ─────────────────────────────────────────────── */
+.mod-meta {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin: -8px 0 20px;
+  font-size: 12px;
+}
+
+.mod-meta span {
+  padding: 2px 9px;
+  border-radius: 20px;
+  background: var(--vp-c-bg-soft);
+  color: var(--vp-c-text-2);
+  border: 1px solid var(--vp-c-divider);
+}
