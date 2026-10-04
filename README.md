@@ -41,18 +41,6 @@ docs/
 模拟器只实现教学需要的命令子集，行为以章节正文为准。要在真机上验证，请用章节里的命令清单自己跑。
 :::
 
-## 部署到 GitHub Pages
-
-站点已配置为项目页：`base` 是 `'/CMD-CLI/'`，对应 https://RIP-LIP.github.io/CMD-CLI/ 。
-
-**换仓库名时必须同步改 `docs/.vitepress/config.mts` 里的 `base`。** 不改的症状是：首页能开，点任何链接都是 404，静态资源全部加载失败。
-
-`.github/workflows/deploy.yml` 已配好，推 `main` 分支触发构建。首次使用需要在仓库 **Settings → Pages** 把 Source 选成 **GitHub Actions**。
-
-## 章节清单
-
-章节清单只有一份数据源：`docs/.vitepress/data/modules.ts`。侧边栏、首页总表、进度页、徽章全部由它派生。加一章只需改这一处。
-
 ## 许可
 
 代码 MIT，见 [LICENSE](./LICENSE)。
